@@ -87,7 +87,6 @@ export default class Crystal {
     }
 
     onRayCast() {
-        console.log('kjop')
     }
 
     changeMat(opt) {

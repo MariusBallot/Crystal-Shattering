@@ -17,7 +17,6 @@ export default class BackgorundScene {
         this.cylinder
 
         this.loader.load('/src/assets/cylinder.glb', (glb) => {
-            console.log(glb)
             this.cylinder = glb.scene
             this.cylinder.traverse(child => {
                 if (child instanceof THREE.Mesh) {
