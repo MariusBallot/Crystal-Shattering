@@ -40,6 +40,7 @@ export default class Crystal {
             },
             blueMatCap: { value: new THREE.TextureLoader().load('/src/assets/matCapSatin.png') },
             camPos: { value: this.camera.position },
+            uRad: { value: 0 },
 
         }
 
@@ -85,6 +86,10 @@ export default class Crystal {
         })
     }
 
+    onRayCast() {
+        console.log('kjop')
+    }
+
     changeMat(opt) {
         if (this.crystal == undefined)
             return
@@ -104,7 +109,7 @@ export default class Crystal {
     update() {
         if (this.crystal == undefined)
             return
-        // this.crystal.rotateY(0.01)
+        this.crystal.rotateY(0.01)
         this.outerLayerMaterial.uniforms.uTime.value += 1
         if (RaycastController.outerLayerUV != undefined) {
             this.outerLayerMaterial.uniforms.uMouse.value = RaycastController.outerLayerUV
@@ -119,6 +124,8 @@ export default class Crystal {
     bind() {
         this.update = this.update.bind(this)
         this.changeMat = this.changeMat.bind(this)
+        this.onRayCast = this.onRayCast.bind(this)
         RAF.subscribe('crystalUpdate', this.update)
+        RaycastController.assignMouseIn('outerLayer', this.onRayCast)
     }
 }

@@ -2,6 +2,7 @@
 #pragma glslify: matcap = require(matcap)
 
 uniform float uTime;
+uniform float uRad;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
 uniform sampler2D blueMatCap;
@@ -24,9 +25,8 @@ void main() {
     vec3 col = texture2D( blueMatCap, vN ).rgb;
 
     float d = distance(vUv, uMouse);
-    if(d<=.05){
-        a = 0.;
-    }
+    
+    a *= smoothstep(uRad,uRad+0.05,d);
 
 	gl_FragColor = vec4(col, a);
 }
