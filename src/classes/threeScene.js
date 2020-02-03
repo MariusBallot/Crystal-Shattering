@@ -36,10 +36,10 @@ class ThreeScene {
 
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
     this.camera.position.set(0, 0, 5)
-    // this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-    // this.controls.enabled = true
-    // this.controls.maxDistance = 1500
-    // this.controls.minDistance = 0
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.controls.enabled = true
+    this.controls.maxDistance = 1500
+    this.controls.minDistance = 0
 
 
     this.composer = new EffectComposer(this.renderer);
@@ -60,6 +60,7 @@ class ThreeScene {
 
     this.crystal = new Crystal({
       scene: this.scene,
+      camera: this.camera,
       envMap: this.backgroundFBO.texture,
       backfaceMap: this.backFaceFBO.texture,
       resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),

@@ -19,12 +19,13 @@ export default class Crystal {
     constructor(options) {
         this.bind()
         this.scene = options.scene
+        this.camera = options.camera
         this.crystal
 
         var uniforms = {
             envMap: { value: options.envMap },
             backfaceMap: { value: options.backfaceMap },
-            resolution: { value: options.resolution }
+            resolution: { value: options.resolution },
         }
 
         var outerLayerUniforms = {
@@ -37,6 +38,9 @@ export default class Crystal {
             uResolution: {
                 value: new THREE.Vector2(window.innerWidth, window.innerHeight)
             },
+            blueMatCap: { value: new THREE.TextureLoader().load('/src/assets/matCapSatin.png') },
+            camPos: { value: this.camera.position },
+
         }
 
 
@@ -74,8 +78,6 @@ export default class Crystal {
                 if (child instanceof THREE.Mesh) {
                     if (child.name == "outerLayer") {
                         child.material = this.outerLayerMaterial
-                    } else {
-                        child.material = this.frontMaterial
                     }
                 }
             })
@@ -102,10 +104,13 @@ export default class Crystal {
     update() {
         if (this.crystal == undefined)
             return
-        this.crystal.rotateY(0.01)
+        // this.crystal.rotateY(0.01)
         this.outerLayerMaterial.uniforms.uTime.value += 1
-        if (RaycastController.outerLayerUV != undefined)
+        if (RaycastController.outerLayerUV != undefined) {
             this.outerLayerMaterial.uniforms.uMouse.value = RaycastController.outerLayerUV
+            this.outerLayerMaterial.uniforms.camPos.value = this.camera.position
+
+        }
 
         this.mixer.update(0.01)
 

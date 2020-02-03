@@ -22,7 +22,6 @@ class RaycastController {
         for (var i = 0; i < intersects.length; i++) {
             if (intersects[i].object.name == 'outerLayer') {
                 this.outerLayerUV = intersects[i].uv
-                console.log(this.outerLayerUV)
             }
         }
     }
