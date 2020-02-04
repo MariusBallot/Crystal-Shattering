@@ -1,5 +1,6 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import * as THREE from 'three'
+import { TweenLite, Power4 } from 'gsap'
 
 import crystalFrontFrag from '../shaders/crystalFront.frag'
 import crystalFrontVert from '../shaders/crystalFront.vert'
@@ -40,7 +41,7 @@ export default class Crystal {
             },
             blueMatCap: { value: new THREE.TextureLoader().load('/src/assets/matCapSatin.png') },
             camPos: { value: this.camera.position },
-            uRad: { value: 0 },
+            uRad: { value: 0.1 },
 
         }
 
@@ -86,7 +87,27 @@ export default class Crystal {
         })
     }
 
-    onRayCast() {
+    onMouseIn() {
+        TweenLite.to(this.outerLayerMaterial.uniforms.uRad, 0.5, {
+            value: 1,
+        })
+        let initRot = this.crystal.rotation.y
+        TweenLite.to(this.crystal.rotation, 0.5, {
+            y: initRot - 5,
+            ease: Power4.easeInOut()
+        })
+    }
+
+    onMouseOut() {
+        TweenLite.to(this.outerLayerMaterial.uniforms.uRad, 0.5, {
+            value: 0,
+        })
+        let initRot = this.crystal.rotation.y
+        TweenLite.to(this.crystal.rotation, 0.5, {
+            y: initRot + 5,
+            ease: Power4.easeInOut()
+
+        })
     }
 
     changeMat(opt) {
@@ -108,7 +129,6 @@ export default class Crystal {
     update() {
         if (this.crystal == undefined)
             return
-        this.crystal.rotateY(0.01)
         this.outerLayerMaterial.uniforms.uTime.value += 1
         if (RaycastController.outerLayerUV != undefined) {
             this.outerLayerMaterial.uniforms.uMouse.value = RaycastController.outerLayerUV
@@ -123,8 +143,9 @@ export default class Crystal {
     bind() {
         this.update = this.update.bind(this)
         this.changeMat = this.changeMat.bind(this)
-        this.onRayCast = this.onRayCast.bind(this)
+        this.onMouseIn = this.onMouseIn.bind(this)
+        this.onMouseOut = this.onMouseOut.bind(this)
         RAF.subscribe('crystalUpdate', this.update)
-        RaycastController.assignMouseIn('outerLayer', this.onRayCast)
+        RaycastController.assignMouseIn('outerLayer', this.onMouseIn, this.onMouseOut)
     }
 }
