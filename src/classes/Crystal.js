@@ -73,7 +73,7 @@ export default class Crystal {
             this.mixer = new THREE.AnimationMixer(this.crystal)
 
             glb.animations.forEach(animation => {
-                this.mixer.clipAction(animation).play()
+                // this.mixer.clipAction(animation).play()
             });
 
             this.crystal.traverse(child => {
