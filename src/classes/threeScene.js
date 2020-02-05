@@ -10,6 +10,7 @@ import RAF from '../utils/raf'
 
 import BackgroundScene from "./BackgroundScene";
 import RaycastController from "../Controller/RaycastController";
+import MouseController from '../Controller/MouseController'
 import Crystal from "./Crystal";
 
 class ThreeScene {
@@ -32,7 +33,6 @@ class ThreeScene {
     document.body.appendChild(this.renderer.domElement)
 
     this.scene = new THREE.Scene()
-    // this.scene.background = new THREE.Color("red")
 
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
     this.camera.position.set(0, 0, 5)
@@ -46,12 +46,6 @@ class ThreeScene {
     this.composer.addPass(new RenderPass(this.scene, this.camera));
     this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 3, 1, 0.9);
     this.composer.addPass(this.bloomPass);
-
-    // let light = new THREE.AmbientLight()
-    // let pointLight = new THREE.PointLight()
-    // pointLight.position.set(10, 10, 0)
-    // this.scene.add(light, pointLight)
-
 
 
     this.backgroundScene = new BackgroundScene(this.scene, this.renderer)
@@ -73,7 +67,7 @@ class ThreeScene {
     RaycastController.scene = this.scene
     RaycastController.camera = this.camera
 
-    this.myGUI()
+    // this.myGUI()
   }
 
   myGUI() {
@@ -119,6 +113,10 @@ class ThreeScene {
     this.crystal.changeMat(0)
     this.scene.background = null
     this.renderer.render(this.scene, this.camera);
+
+    this.camera.position.x += (MouseController.mouse.x / 200 - this.camera.position.x) * 0.5
+    this.camera.position.y += (MouseController.mouse.y / 200 - this.camera.position.y) * 0.5
+    this.camera.lookAt(0, 0, 0)
   }
 
 

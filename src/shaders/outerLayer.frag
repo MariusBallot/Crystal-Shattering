@@ -10,15 +10,16 @@ uniform vec3 camPos;
 
 
 varying vec3 worldNormal;
+varying vec3 pos;
 varying vec2 vUv;
 varying vec2 vN;
 
 
 void main() {
     vec2 st = gl_FragCoord.xy/uResolution;
-    float n = snoise3(vec3(vUv*2.,uTime*0.01));
+    float n = snoise3(vec3(pos.xy,uTime*0.01));
     float a = smoothstep(0.1,0.19,n);
-    a+=0.2;
+    a+=0.4;
     vec2 matCapUv = matcap(camPos, worldNormal);
 
     // vec3 col = vec3(texture2D(blueMatCap, matCapUv).rgb);

@@ -22,6 +22,10 @@ export default class Crystal {
         this.scene = options.scene
         this.camera = options.camera
         this.crystal
+        this.rotAmp = 3
+        this.actions = []
+        this.clickFlag = false
+        this.mixer
 
         var uniforms = {
             envMap: { value: options.envMap },
@@ -70,10 +74,11 @@ export default class Crystal {
         this.loader.load("/src/assets/crystal.glb", (glb) => {
             console.log(glb)
             this.crystal = glb.scene
+            this.crystal.rotateY(-Math.PI / 4)
             this.mixer = new THREE.AnimationMixer(this.crystal)
 
-            glb.animations.forEach(animation => {
-                // this.mixer.clipAction(animation).play()
+            glb.animations.forEach((animation, i) => {
+                this.actions.push(this.mixer.clipAction(animation))
             });
 
             this.crystal.traverse(child => {
@@ -88,31 +93,48 @@ export default class Crystal {
     }
 
     onMouseIn() {
-        TweenLite.to(this.outerLayerMaterial.uniforms.uRad, 0.5, {
+        TweenLite.to(this.outerLayerMaterial.uniforms.uRad, 1, {
             value: 1,
         })
         let initRot = this.crystal.rotation.y
-        TweenLite.to(this.crystal.rotation, 0.5, {
-            y: initRot - 5,
-            ease: Power4.easeInOut()
-        })
+        // TweenLite.to(this.crystal.rotation, 0.5, {
+        //     y: initRot - this.rotAmp,
+        //     ease: Power4.easeInOut()
+        // })
+        document.body.style = "cursor:pointer"
+        this.clickFlag = true
     }
 
     onMouseOut() {
-        TweenLite.to(this.outerLayerMaterial.uniforms.uRad, 0.5, {
+        TweenLite.to(this.outerLayerMaterial.uniforms.uRad, 1, {
             value: 0,
         })
         let initRot = this.crystal.rotation.y
-        TweenLite.to(this.crystal.rotation, 0.5, {
-            y: initRot + 5,
-            ease: Power4.easeInOut()
+        // TweenLite.to(this.crystal.rotation, 0.5, {
+        //     y: initRot + this.rotAmp,
+        //     ease: Power4.easeInOut()
+        // })
+        document.body.style = ""
+        this.clickFlag = false
+    }
 
-        })
+    onClick() {
+        if (!this.clickFlag)
+            return
+        this.actions.forEach(action => {
+            action.reset()
+            action.play(0)
+        });
+
     }
 
     changeMat(opt) {
         if (this.crystal == undefined)
             return
+
+        this.crystal.position.y = Math.sin(Date.now() * 0.001) * 0.2
+        this.crystal.rotateY(0.001)
+
 
         this.crystal.traverse(child => {
             if (child instanceof THREE.Mesh) {
@@ -145,7 +167,10 @@ export default class Crystal {
         this.changeMat = this.changeMat.bind(this)
         this.onMouseIn = this.onMouseIn.bind(this)
         this.onMouseOut = this.onMouseOut.bind(this)
+        this.onClick = this.onClick.bind(this)
         RAF.subscribe('crystalUpdate', this.update)
         RaycastController.assignMouseIn('outerLayer', this.onMouseIn, this.onMouseOut)
+
+        window.addEventListener('click', this.onClick)
     }
 }

@@ -1,9 +1,10 @@
 varying vec3 worldNormal;
 varying vec2 vUv;
-
+varying vec3 pos;
 varying vec2 vN;
 
 void main() {
+  pos = position;
   vUv = uv;
 	worldNormal = normalize( modelViewMatrix * vec4(normal, 0.)).xyz;
 	// worldNormal = normal;
